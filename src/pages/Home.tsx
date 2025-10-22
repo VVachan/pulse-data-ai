@@ -168,8 +168,13 @@ const Home = () => {
 
       {/* Footer */}
       <footer className="border-t border-border py-8 px-4">
-        <div className="container mx-auto text-center text-muted-foreground">
-          <p>© 2025 DataGuard | Contact: dataguard2025@gmail.com</p>
+        <div className="container mx-auto text-center">
+          <p className="text-muted-foreground mb-2">
+            © 2025 DataGuard. All rights reserved. | Contact: dataguard2025@gmail.com
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Protecting networks with AI-powered security analysis
+          </p>
         </div>
       </footer>
     </div>

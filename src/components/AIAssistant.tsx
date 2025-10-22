@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MessageCircle, X, Send } from 'lucide-react';
+import { Bot, X, Send } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -43,7 +43,7 @@ const AIAssistant = () => {
         onClick={() => setIsOpen(!isOpen)}
         className="fixed bottom-6 right-6 w-14 h-14 bg-primary rounded-full shadow-glow-red flex items-center justify-center z-50 hover:shadow-xl transition-all"
       >
-        {isOpen ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}
+        {isOpen ? <X className="w-6 h-6" /> : <Bot className="w-6 h-6" />}
       </motion.button>
 
       {/* Chat Popup */}
@@ -58,7 +58,7 @@ const AIAssistant = () => {
             {/* Header */}
             <div className="bg-primary/10 border-b border-primary/20 p-4">
               <h3 className="font-semibold text-foreground flex items-center gap-2">
-                <MessageCircle className="w-5 h-5 text-primary" />
+                <Bot className="w-5 h-5 text-primary" />
                 AI Assistant
               </h3>
             </div>

@@ -45,24 +45,22 @@ const About = () => {
             </p>
           </motion.div>
 
-          <div className="space-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {cards.map((card, idx) => (
               <motion.div
                 key={idx}
-                initial={{ opacity: 0, x: idx % 2 === 0 ? -20 : 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ delay: idx * 0.1 }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.15 }}
                 viewport={{ once: true }}
-                className="glass glow-red p-8 rounded-xl"
+                className="glass glow-cyan p-8 rounded-xl hover:glow-red transition-all duration-300"
               >
-                <div className="flex items-start gap-6">
-                  <div className="bg-primary/20 p-4 rounded-lg">
-                    <card.icon className="w-12 h-12 text-primary" />
+                <div className="text-center">
+                  <div className="bg-primary/10 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <card.icon className="w-10 h-10 text-primary" />
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-2xl font-semibold mb-3">{card.title}</h3>
-                    <p className="text-muted-foreground leading-relaxed">{card.description}</p>
-                  </div>
+                  <h3 className="text-2xl font-semibold mb-4">{card.title}</h3>
+                  <p className="text-muted-foreground leading-relaxed">{card.description}</p>
                 </div>
               </motion.div>
             ))}

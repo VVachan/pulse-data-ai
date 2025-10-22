@@ -69,38 +69,17 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen flex">
-      {/* Left Side - Animation */}
+      {/* Left Side - Static Logo */}
       <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         className="hidden lg:flex lg:w-1/2 bg-gradient-dark items-center justify-center p-12"
       >
-        <motion.div
-          animate={{
-            scale: [1, 1.1, 1],
-            rotate: [0, 5, -5, 0],
-          }}
-          transition={{
-            duration: 4,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="relative"
-        >
-          <Shield className="w-64 h-64 text-primary glow-red" />
-          <motion.div
-            className="absolute inset-0 bg-primary/20 rounded-full blur-3xl"
-            animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.3, 0.5, 0.3],
-            }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-        </motion.div>
+        <div className="text-center">
+          <Shield className="w-64 h-64 text-primary glow-red mx-auto mb-6" />
+          <h1 className="text-5xl font-bold text-white mb-3">DataGuard</h1>
+          <p className="text-xl text-muted-foreground">Secure Data Analysis</p>
+        </div>
       </motion.div>
 
       {/* Right Side - Auth Form */}
@@ -112,7 +91,7 @@ const Auth = () => {
         >
           <div className="glass glow-red p-8 rounded-xl">
             <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-gradient mb-2">DataGuard</h1>
+              <h1 className="text-3xl font-bold text-white mb-2">DataGuard</h1>
               <p className="text-muted-foreground">Secure your data, detect threats</p>
             </div>
 
@@ -216,6 +195,16 @@ const Auth = () => {
                       onChange={(e) => setSignupData({ ...signupData, confirmPassword: e.target.value })}
                       required
                     />
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <Checkbox id="terms" required />
+                    <label
+                      htmlFor="terms"
+                      className="text-sm text-muted-foreground cursor-pointer"
+                    >
+                      I agree to the Terms and Conditions
+                    </label>
                   </div>
 
                   <Button type="submit" className="w-full" disabled={isLoading}>

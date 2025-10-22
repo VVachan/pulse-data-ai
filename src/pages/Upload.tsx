@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Upload as UploadIcon, FileCheck, Download, Save } from 'lucide-react';
 import { useDropzone } from 'react-dropzone';
 import Navbar from '@/components/Navbar';
-import AIAssistant from '@/components/AIAssistant';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { parseCSV, simulateAnalysis } from '@/lib/analysis';
@@ -116,7 +115,6 @@ const Upload = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <AIAssistant />
 
       <div className="pt-24 pb-12 px-4">
         <div className="container mx-auto max-w-6xl">
@@ -215,6 +213,40 @@ const Upload = () => {
                   </div>
                 </div>
 
+                {/* Traffic Distribution Pie Chart */}
+                <div className="glass p-6 rounded-xl">
+                  <h3 className="text-xl font-semibold mb-4">Traffic Distribution</h3>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie
+                        data={[
+                          { name: 'DDoS Attack', value: result.confidence * 100 },
+                          { name: 'Normal Traffic', value: (1 - result.confidence) * 100 }
+                        ]}
+                        dataKey="value"
+                        nameKey="name"
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={100}
+                        label
+                      >
+                        <Cell fill="#E50914" />
+                        <Cell fill="#00CFEA" />
+                      </Pie>
+                      <Tooltip
+                        contentStyle={{
+                          background: '#1a1a1a',
+                          border: '1px solid #333',
+                          borderRadius: '8px',
+                          color: '#E7EEF6',
+                        }}
+                        itemStyle={{ color: '#E7EEF6' }}
+                      />
+                      <Legend wrapperStyle={{ color: '#E7EEF6' }} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+
                 {/* Charts */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Bar Chart */}
@@ -230,14 +262,16 @@ const Upload = () => {
                             background: '#1a1a1a',
                             border: '1px solid #333',
                             borderRadius: '8px',
+                            color: '#E7EEF6',
                           }}
+                          itemStyle={{ color: '#E7EEF6' }}
                         />
                         <Bar dataKey="importance" fill="#E50914" />
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
 
-                  {/* Pie Chart */}
+                  {/* Feature Distribution Pie Chart */}
                   <div className="glass p-6 rounded-xl">
                     <h3 className="text-xl font-semibold mb-4">Feature Distribution</h3>
                     <ResponsiveContainer width="100%" height={300}>
@@ -260,8 +294,11 @@ const Upload = () => {
                             background: '#1a1a1a',
                             border: '1px solid #333',
                             borderRadius: '8px',
+                            color: '#E7EEF6',
                           }}
+                          itemStyle={{ color: '#E7EEF6' }}
                         />
+                        <Legend wrapperStyle={{ color: '#E7EEF6' }} />
                       </PieChart>
                     </ResponsiveContainer>
                   </div>
