@@ -29,25 +29,27 @@ const Auth = () => {
     confirmPassword: '',
   });
 
+  // ✅ FIXED handleLogin — added await
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    const result = login(loginData);
-    
+    const result = await login(loginData); // <-- await added
+
     if (result.success) {
       toast.success('Welcome back!');
       navigate('/home');
     } else {
       toast.error(result.error || 'Login failed');
     }
-    
+
     setIsLoading(false);
   };
 
+  // ✅ FIXED handleSignup — added await + password match check
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (signupData.password !== signupData.confirmPassword) {
       toast.error('Passwords do not match');
       return;
@@ -55,21 +57,21 @@ const Auth = () => {
 
     setIsLoading(true);
 
-    const result = signup(signupData);
-    
+    const result = await signup(signupData); // <-- await added
+
     if (result.success) {
       toast.success('Account created successfully!');
       navigate('/home');
     } else {
       toast.error(result.error || 'Signup failed');
     }
-    
+
     setIsLoading(false);
   };
 
   return (
     <div className="min-h-screen flex">
-      {/* Left Side - Static Logo */}
+      {/* Left Side - Logo */}
       <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
@@ -101,6 +103,7 @@ const Auth = () => {
                 <TabsTrigger value="signup">Sign Up</TabsTrigger>
               </TabsList>
 
+              {/* ---------------- LOGIN ---------------- */}
               <TabsContent value="login">
                 <form onSubmit={handleLogin} className="space-y-4">
                   <div className="space-y-2">
@@ -108,9 +111,10 @@ const Auth = () => {
                     <Input
                       id="login-email"
                       type="email"
-                      placeholder="you@example.com"
                       value={loginData.email}
-                      onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
+                      onChange={(e) =>
+                        setLoginData({ ...loginData, email: e.target.value })
+                      }
                       required
                     />
                   </div>
@@ -122,7 +126,9 @@ const Auth = () => {
                       type="password"
                       placeholder="••••••••"
                       value={loginData.password}
-                      onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
+                      onChange={(e) =>
+                        setLoginData({ ...loginData, password: e.target.value })
+                      }
                       required
                     />
                   </div>
@@ -131,7 +137,9 @@ const Auth = () => {
                     <Checkbox
                       id="remember"
                       checked={rememberMe}
-                      onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+                      onCheckedChange={(checked) =>
+                        setRememberMe(checked as boolean)
+                      }
                     />
                     <label
                       htmlFor="remember"
@@ -147,6 +155,7 @@ const Auth = () => {
                 </form>
               </TabsContent>
 
+              {/* ---------------- SIGNUP ---------------- */}
               <TabsContent value="signup">
                 <form onSubmit={handleSignup} className="space-y-4">
                   <div className="space-y-2">
@@ -154,9 +163,10 @@ const Auth = () => {
                     <Input
                       id="signup-name"
                       type="text"
-                      placeholder="John Doe"
                       value={signupData.name}
-                      onChange={(e) => setSignupData({ ...signupData, name: e.target.value })}
+                      onChange={(e) =>
+                        setSignupData({ ...signupData, name: e.target.value })
+                      }
                       required
                     />
                   </div>
@@ -166,9 +176,10 @@ const Auth = () => {
                     <Input
                       id="signup-email"
                       type="email"
-                      placeholder="you@example.com"
                       value={signupData.email}
-                      onChange={(e) => setSignupData({ ...signupData, email: e.target.value })}
+                      onChange={(e) =>
+                        setSignupData({ ...signupData, email: e.target.value })
+                      }
                       required
                     />
                   </div>
@@ -178,9 +189,13 @@ const Auth = () => {
                     <Input
                       id="signup-password"
                       type="password"
-                      placeholder="••••••••"
                       value={signupData.password}
-                      onChange={(e) => setSignupData({ ...signupData, password: e.target.value })}
+                      onChange={(e) =>
+                        setSignupData({
+                          ...signupData,
+                          password: e.target.value,
+                        })
+                      }
                       required
                     />
                   </div>
@@ -190,9 +205,13 @@ const Auth = () => {
                     <Input
                       id="signup-confirm"
                       type="password"
-                      placeholder="••••••••"
                       value={signupData.confirmPassword}
-                      onChange={(e) => setSignupData({ ...signupData, confirmPassword: e.target.value })}
+                      onChange={(e) =>
+                        setSignupData({
+                          ...signupData,
+                          confirmPassword: e.target.value,
+                        })
+                      }
                       required
                     />
                   </div>

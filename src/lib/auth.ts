@@ -1,8 +1,20 @@
+import { getAuth } from "firebase/auth";
+import { app } from "@/firebase"; // Ensure 'app' is exported from your firebase config
+const auth = getAuth(app);
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  updateProfile,
+  User as FirebaseUser,
+} from "firebase/auth";
+
+// Define the User interface (for type safety)
 export interface User {
   id: string;
   name: string;
   email: string;
-  createdAt: string;
+  createdAt?: string;
 }
 
 export interface AuthData {
@@ -11,57 +23,103 @@ export interface AuthData {
   name?: string;
 }
 
-const STORAGE_KEY = 'dataguard_user';
-const USERS_KEY = 'dataguard_users';
+// ---------------------- SIGNUP ----------------------
+export const signup = async (
+  data: AuthData
+): Promise<{ success: boolean; error?: string; user?: User }> => {
+  try {
+    if (!data.name || !data.email || !data.password) {
+      return { success: false, error: "All fields are required" };
+    }
 
-export const signup = (data: AuthData): { success: boolean; error?: string; user?: User } => {
-  if (!data.name || !data.email || !data.password) {
-    return { success: false, error: 'All fields are required' };
+    // Create user in Firebase
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      data.email,
+      data.password
+    );
+
+    // Update display name in Firebase user profile
+    if (auth.currentUser) {
+      await updateProfile(auth.currentUser, { displayName: data.name });
+    }
+
+    const user = userCredential.user;
+    const newUser: User = {
+      id: user.uid,
+      name: data.name,
+      email: user.email || "",
+      createdAt: new Date().toISOString(),
+    };
+
+    return { success: true, user: newUser };
+  } catch (error: any) {
+    console.error("Signup error:", error);
+    return { success: false, error: error.message };
   }
-
-  const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
-  
-  if (users.find((u: User) => u.email === data.email)) {
-    return { success: false, error: 'Email already registered' };
-  }
-
-  const newUser: User = {
-    id: Math.random().toString(36).substr(2, 9),
-    name: data.name,
-    email: data.email,
-    createdAt: new Date().toISOString(),
-  };
-
-  users.push({ ...newUser, password: data.password });
-  localStorage.setItem(USERS_KEY, JSON.stringify(users));
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(newUser));
-
-  return { success: true, user: newUser };
 };
 
-export const login = (data: AuthData): { success: boolean; error?: string; user?: User } => {
-  const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
-  const user = users.find((u: any) => u.email === data.email && u.password === data.password);
+// ---------------------- LOGIN ----------------------
+export const login = async (
+  data: AuthData
+): Promise<{ success: boolean; error?: string; user?: User }> => {
+  try {
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      data.email,
+      data.password
+    );
 
-  if (!user) {
-    return { success: false, error: 'Invalid email or password' };
+    const user = userCredential.user;
+    const loggedInUser: User = {
+      id: user.uid,
+      name: user.displayName || "",
+      email: user.email || "",
+    };
+
+    return { success: true, user: loggedInUser };
+  } catch (error: any) {
+    console.error("Login error:", error);
+    return { success: false, error: error.message };
   }
-
-  const { password, ...userWithoutPassword } = user;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(userWithoutPassword));
-
-  return { success: true, user: userWithoutPassword };
 };
 
-export const logout = () => {
-  localStorage.removeItem(STORAGE_KEY);
+// ---------------------- LOGOUT ----------------------
+export const logout = async (): Promise<void> => {
+  await signOut(auth);
 };
 
+// ---------------------- GET CURRENT USER ----------------------
 export const getCurrentUser = (): User | null => {
-  const user = localStorage.getItem(STORAGE_KEY);
-  return user ? JSON.parse(user) : null;
+  const user: FirebaseUser | null = auth.currentUser;
+  if (!user) return null;
+
+  return {
+    id: user.uid,
+    name: user.displayName || "",
+    email: user.email || "",
+  };
 };
 
+// ---------------------- IS AUTHENTICATED ----------------------
 export const isAuthenticated = (): boolean => {
-  return !!getCurrentUser();
+  return !!auth.currentUser;
+};
+
+// ---------------------- AUTH STATE LISTENER ----------------------
+import { onAuthStateChanged } from "firebase/auth";
+
+export const onAuthChange = (callback: (user: User | null) => void): void => {
+  onAuthStateChanged(auth, (firebaseUser) => {
+    if (firebaseUser) {
+      const currentUser: User = {
+        id: firebaseUser.uid,
+        name: firebaseUser.displayName || "",
+        email: firebaseUser.email || "",
+      };
+      callback(currentUser);
+    } else {
+      callback(null);
+    }
+  });
 };
